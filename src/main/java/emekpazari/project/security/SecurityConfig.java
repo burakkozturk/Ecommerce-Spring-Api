@@ -26,7 +26,9 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf
                         .disable()) // CSRF korumasını devre dışı bırak
                 .authorizeRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/auth/**").permitAll() // "/auth" yolu için güvenlik kısıtlamalarını kaldır.
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/category/**").permitAll()
+                        .requestMatchers("/product/**").permitAll()
                         .anyRequest().authenticated()) // Diğer tüm istekler için kimlik doğrulaması gerekir
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
