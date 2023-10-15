@@ -11,20 +11,20 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/category")
+@RequestMapping("/api/category")
 public class CategoryController {
 
     @Autowired
     private CategoryService categoryService;
 
-    @GetMapping("/categories")
+    @GetMapping()
     public ResponseEntity<List<Category>> getAllCategory(){
         List<Category> categories = categoryService.getAllCategory();
         return ResponseEntity.ok(categories);
     }
 
     @GetMapping("/category")
-    public ResponseEntity<Category> getCategoryById(@RequestParam(name = "categoryId")  Long id) {
+    public ResponseEntity<Category> getCategoryById(@RequestParam(name = "id")  Long id) {
         Optional<Category> category = categoryService.getCategoryById(id);
 
         if(category.isPresent()) {

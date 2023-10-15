@@ -23,16 +23,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf
-                        .disable()) // CSRF korumasını devre dışı bırak
+                .csrf(csrf -> csrf.disable())
                 .authorizeRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/category/**").permitAll()
-                        .requestMatchers("/product/**").permitAll()
-                        .anyRequest().authenticated()) // Diğer tüm istekler için kimlik doğrulaması gerekir
+                        .requestMatchers("/api/**").permitAll()
+                        .anyRequest().authenticated())
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                // JWT filtresi ekleme
+
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
