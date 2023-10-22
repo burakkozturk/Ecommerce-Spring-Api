@@ -1,7 +1,9 @@
 package emekpazari.project.controller;
 
+import emekpazari.project.dto.LatestProductResponse;
 import emekpazari.project.dto.ProductDto;
 import emekpazari.project.dto.ProductResponse;
+import emekpazari.project.entity.Category;
 import emekpazari.project.entity.Product;
 import emekpazari.project.service.ProductService;
 import org.apache.coyote.Response;
@@ -13,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/product")
+@CrossOrigin
 public class ProductController {
 
     @Autowired
@@ -63,6 +66,18 @@ public class ProductController {
     @GetMapping("/search")
     public List<ProductResponse> getProductsByTitle(@RequestParam(name="title") String title) {
         return productService.getProductsByTitle(title);
+    }
+
+    @GetMapping("/latest")
+    public ResponseEntity<List<ProductResponse>> getLastSixProducts() {
+        List<ProductResponse> productResponses = productService.getLastSixProducts();
+        return ResponseEntity.ok(productResponses);
+    }
+
+    @GetMapping("/latest/{category}")
+    public ResponseEntity<List<LatestProductResponse>> getLastSixProductsByCategory(@PathVariable Category category) {
+        List<LatestProductResponse> productResponses = productService.getLastSixProductsByCategory(category);
+        return ResponseEntity.ok(productResponses);
     }
 
     @PostMapping("/product")

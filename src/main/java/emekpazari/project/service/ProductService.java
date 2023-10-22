@@ -1,5 +1,6 @@
 package emekpazari.project.service;
 
+import emekpazari.project.dto.LatestProductResponse;
 import emekpazari.project.dto.ProductDto;
 import emekpazari.project.dto.ProductResponse;
 import emekpazari.project.entity.Category;
@@ -21,6 +22,13 @@ public class ProductService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
 
     public List<ProductResponse> getAllProducts() {
         List<Product> products = productRepository.findAll();
@@ -82,11 +90,33 @@ public class ProductService {
     }
 
 
-    @Autowired
-    private CategoryRepository categoryRepository;
+    public List<ProductResponse> getLastSixProducts() {
+        List<Product> products = productRepository.findTop6ByOrderByIdDesc();
+        return products.stream()
+                .map(this::convertToProductResponse)
+                .collect(Collectors.toList());
+    }
 
-    @Autowired
-    private UserRepository userRepository;
+    public List<LatestProductResponse> getLastSixProductsByCategory(Category category) {
+        List<Product> products = productRepository.findTop6ByCategoryOrderByIdDesc(category);
+        return products.stream()
+                .map(this::convertToLatestProductResponse)
+                .collect(Collectors.toList());
+    }
+
+    private LatestProductResponse convertToLatestProductResponse(Product product) {
+        LatestProductResponse productResponse = new LatestProductResponse();
+
+        productResponse.setId(product.getId());
+        productResponse.setTitle(product.getTitle());
+        productResponse.setDescription(product.getDescription());
+        productResponse.setPrice(product.getPrice());
+        productResponse.setColor(product.getColor());
+        productResponse.setPhotoUrl(product.getPhotoUrl());
+
+
+        return productResponse;
+    }
 
     public ProductResponse saveProduct(ProductDto productDTO) {
         // Find the category and user based on the provided IDs

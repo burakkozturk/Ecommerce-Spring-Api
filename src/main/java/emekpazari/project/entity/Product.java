@@ -25,10 +25,10 @@ public class Product {
     @Column(nullable = false)
     private String description;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = false)
     private double price;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = false)
     private String color;
 
     @Column(nullable = false)

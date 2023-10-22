@@ -1,6 +1,7 @@
 package emekpazari.project.repository;
 
 import emekpazari.project.dto.ProductResponse;
+import emekpazari.project.entity.Category;
 import emekpazari.project.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -22,4 +23,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByTitleContainingIgnoreCase(String title);
 
     List<Product> findByStatus(int status);
+
+    List<Product> findTop6ByOrderByIdDesc();
+
+    List<Product> findTop6ByCategoryOrderByIdDesc(Category category);
+
 }
