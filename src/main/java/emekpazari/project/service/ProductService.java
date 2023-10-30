@@ -97,13 +97,6 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-    public List<LatestProductResponse> getLastSixProductsByCategory(Category category) {
-        List<Product> products = productRepository.findTop6ByCategoryOrderByIdDesc(category);
-        return products.stream()
-                .map(this::convertToLatestProductResponse)
-                .collect(Collectors.toList());
-    }
-
     private LatestProductResponse convertToLatestProductResponse(Product product) {
         LatestProductResponse productResponse = new LatestProductResponse();
 
@@ -118,6 +111,36 @@ public class ProductService {
         return productResponse;
     }
 
+    public List<ProductResponse> filterProductsByCriteria(String color, Double minPrice, Double maxPrice, Long categoryId) {
+        List<ProductResponse> allProducts = getAllProducts();
+        List<ProductResponse> filteredProducts = new ArrayList<>();
+
+        for (ProductResponse product : allProducts) {
+            boolean passFilter = true;
+
+            if (color != null && !color.isEmpty() && !product.getColor().equals(color)) {
+                passFilter = false;
+            }
+
+            if (minPrice != null && product.getPrice() < minPrice) {
+                passFilter = false;
+            }
+
+            if (maxPrice != null && product.getPrice() > maxPrice) {
+                passFilter = false;
+            }
+
+            if (categoryId != null && !product.getCategoryId().equals(categoryId)) {
+                passFilter = false;
+            }
+
+            if (passFilter) {
+                filteredProducts.add(product);
+            }
+        }
+
+        return filteredProducts;
+    }
     public ProductResponse saveProduct(ProductDto productDTO) {
         // Find the category and user based on the provided IDs
         Category category = categoryRepository.findById(productDTO.getCategoryId())
@@ -205,10 +228,11 @@ public class ProductService {
         productResponse.setColor(product.getColor());
         productResponse.setStatus(product.getStatus());
         productResponse.setPhotoUrl(product.getPhotoUrl());
-        productResponse.setCategoryId(product.getCategory().getId()); // assuming getCategory() returns the category entity
-        productResponse.setUserId(product.getUser().getId()); // assuming getUserId() returns the user ID
+        productResponse.setCategoryId(product.getCategory().getId()); // Ürünün kategori kimliği
+        productResponse.setUserId(product.getUser().getId()); // Ürünü oluşturan kullanıcının kimliği
         return productResponse;
     }
+
 }
 
 

@@ -20,4 +20,6 @@ public class ProductResponse {
     private String color;
     private int status;
     private String photoUrl;
+
+
 }

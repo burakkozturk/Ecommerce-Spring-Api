@@ -1,16 +1,15 @@
 package emekpazari.project.controller;
 
-import emekpazari.project.dto.LatestProductResponse;
 import emekpazari.project.dto.ProductDto;
 import emekpazari.project.dto.ProductResponse;
-import emekpazari.project.entity.Category;
 import emekpazari.project.entity.Product;
 import emekpazari.project.service.ProductService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -73,11 +72,43 @@ public class ProductController {
         List<ProductResponse> productResponses = productService.getLastSixProducts();
         return ResponseEntity.ok(productResponses);
     }
+    @GetMapping("/filter")
+    public ResponseEntity<List<ProductResponse>> filterProducts(
+            @RequestParam(required = false) String color,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice,
+            @RequestParam(required = false) Long categoryId
+    ) {
+        List<ProductResponse> filteredProducts = productService.filterProductsByCriteria(color, minPrice, maxPrice, categoryId);
 
-    @GetMapping("/latest/{category}")
-    public ResponseEntity<List<LatestProductResponse>> getLastSixProductsByCategory(@PathVariable Category category) {
-        List<LatestProductResponse> productResponses = productService.getLastSixProductsByCategory(category);
-        return ResponseEntity.ok(productResponses);
+        List<Product> productEntities = convertToProductEntities(filteredProducts);
+
+        // Dönüştürülmüş ürünleri kullanarak işlem yapabilirsiniz.
+
+        return ResponseEntity.ok(filteredProducts);
+    }
+
+    private List<ProductResponse> convertToProductResponses(List<Product> products) {
+        List<ProductResponse> productResponses = new ArrayList<>();
+        for (Product product : products) {
+            // ProductResponse nesnesi oluşturma ve özellikleri atama işlemleri burada yapılabilir
+            ProductResponse productResponse = new ProductResponse();
+            productResponse.setId(product.getId());
+            // Diğer özellikleri atama işlemleri burada yapılabilir
+            productResponses.add(productResponse);
+        }
+        return productResponses;
+    }
+
+    private List<Product> convertToProductEntities(List<ProductResponse> productResponses) {
+        List<Product> products = new ArrayList<>();
+        for (ProductResponse productResponse : productResponses) {
+            Product product = new Product();
+            product.setId(productResponse.getId());
+            // Diğer özellikleri atama işlemleri burada yapılabilir
+            products.add(product);
+        }
+        return products;
     }
 
     @PostMapping("/product")

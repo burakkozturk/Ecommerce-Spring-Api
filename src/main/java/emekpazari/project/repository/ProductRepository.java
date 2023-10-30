@@ -26,6 +26,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     List<Product> findTop6ByOrderByIdDesc();
 
-    List<Product> findTop6ByCategoryOrderByIdDesc(Category category);
+
 
 }
